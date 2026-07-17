@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أرشيف سعيد أبو زينة — خواطر وقصص</title>
+<meta name="description" content="أرشيف شخصي لخواطر وقصص سعيد أبو زينة القصيرة">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="ink-drop" aria-hidden="true"></div>
+  <div class="head-inner">
+    <p class="eyebrow">أرشيف شخصي</p>
+    <h1 class="site-title">سعيد أبو زينة</h1>
+    <p class="site-sub">خواطرُ وقصصٌ قصيرة، مِن دفترٍ رقمي محفوظ بمرور الزمن</p>
+    <p class="site-count"><span id="post-count">—</span> نصًا مؤرشفًا حتى الآن</p>
+  </div>
+  <svg class="nib" viewBox="0 0 200 60" aria-hidden="true">
+    <path d="M10 30 Q100 5 190 30 Q100 55 10 30 Z" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <line x1="100" y1="30" x2="100" y2="18" stroke="currentColor" stroke-width="1.4"/>
+  </svg>
+</header>
+
+<nav class="filters" aria-label="تصفية المنشورات">
+  <button class="filter-btn is-active" data-filter="all">الكل</button>
+  <button class="filter-btn" data-filter="story">قصص</button>
+  <button class="filter-btn" data-filter="khatera">خواطر</button>
+  <div class="search-wrap">
+    <input id="search-input" type="search" placeholder="ابحث في الأرشيف…" aria-label="بحث">
+  </div>
+</nav>
+
+<main class="timeline-wrap">
+  <div class="spine" aria-hidden="true"></div>
+  <div id="timeline" class="timeline"></div>
+  <p id="empty-msg" class="empty-msg" hidden>لا توجد نتائج مطابقة.</p>
+  <div id="sentinel" class="sentinel" aria-hidden="true"></div>
+  <button id="load-more" class="load-more" hidden>تحميل المزيد</button>
+</main>
+
+<footer class="site-foot">
+  <p>هذا الأرشيف نسخة خاصة محفوظة لحماية حقوق النشر — © <span id="year"></span> سعيد أبو زينة</p>
+</footer>
+
+<div id="lightbox" class="lightbox" hidden>
+  <button id="lightbox-close" class="lightbox-close" aria-label="إغلاق">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
