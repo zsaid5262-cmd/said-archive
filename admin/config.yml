@@ -1,0 +1,31 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# لا تغيّر هذا الرابط - يجب أن يطابق دومين الموقع بعد ربطه بـ Netlify
+site_url: https://REPLACE-WITH-YOUR-NETLIFY-URL.netlify.app
+
+media_folder: "assets/images"
+public_folder: "assets/images"
+
+locale: "ar"
+
+collections:
+  - name: "posts"
+    label: "الأرشيف"
+    label_singular: "منشور"
+    files:
+      - name: "posts"
+        label: "كل المنشورات"
+        file: "data/posts.json"
+        fields:
+          - label: "المنشورات"
+            name: "posts"
+            widget: "list"
+            label_singular: "منشور"
+            summary: "{{title}} — {{fields.date_iso}}"
+            fields:
+              - { label: "التاريخ والوقت", name: "date_iso", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ss", picker_utc: false }
+              - { label: "العنوان (اتركه فارغًا إن كانت خاطرة بلا عنوان)", name: "title", widget: "string", required: false }
+              - { label: "النص", name: "body", widget: "text" }
+              - { label: "صورة مرافقة (اختياري)", name: "image", widget: "image", required: false, choose_url: false }
