@@ -23,6 +23,7 @@
 
   function formatDate(iso) {
     const d = new Date(iso);
+    if (isNaN(d)) return "";
     return `${d.getDate()} ${ARABIC_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
 
@@ -145,11 +146,14 @@
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  fetch("data/posts.json")
+  fetch("data/posts.json", { cache: "no-store" })
     .then((r) => r.json())
     .then((data) => {
-      ALL_POSTS = data;
-      postCountEl.textContent = data.length.toLocaleString("ar-EG");
+      const list = Array.isArray(data) ? data : (data.posts || []);
+      ALL_POSTS = list
+        .slice()
+        .sort((a, b) => new Date(b.date_iso) - new Date(a.date_iso));
+      postCountEl.textContent = ALL_POSTS.length.toLocaleString("ar-EG");
       resetAndRender();
     })
     .catch((err) => {
