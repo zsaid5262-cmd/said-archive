@@ -3,7 +3,7 @@ backend:
   branch: main
 
 # لا تغيّر هذا الرابط - يجب أن يطابق دومين الموقع بعد ربطه بـ Netlify
-site_url: https://REPLACE-WITH-YOUR-NETLIFY-URL.netlify.app
+site_url: https://dynamic-marshmallow-1aa458.netlify.app
 
 media_folder: "assets/images"
 public_folder: "assets/images"
