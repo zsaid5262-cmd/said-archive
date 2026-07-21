@@ -300,21 +300,32 @@ body{ top:0 !important; }
   display:flex;
   gap:0.5rem;
   margin-top:1.1rem;
+  flex-wrap:wrap;
 }
 .reaction-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:0.35rem;
   background:rgba(0,0,0,0.04);
   border:1px solid rgba(0,0,0,0.08);
   border-radius:999px;
-  font-size:1.05rem;
+  font-size:1rem;
   line-height:1;
-  padding:0.35rem 0.6rem;
+  padding:0.35rem 0.7rem;
   cursor:pointer;
   transition:transform 0.15s ease, background 0.15s ease;
 }
-.reaction-btn:hover{ transform:translateY(-2px); }
+.reaction-btn:hover:not(:disabled){ transform:translateY(-2px); }
+.reaction-btn:disabled{ cursor:default; }
 .reaction-btn.is-selected{
   background:rgba(199,154,75,0.22);
   border-color:var(--brass);
+}
+.reaction-total{
+  font-family:'Noto Kufi Arabic', sans-serif;
+  font-size:0.78rem;
+  color:var(--ink-text);
+  opacity:0.65;
 }
 
 /* ---------- Newsletter ---------- */
