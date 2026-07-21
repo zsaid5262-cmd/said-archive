@@ -54,6 +54,28 @@
     return true;
   }
 
+  const REACTIONS = ["❤️", "😢", "😊", "👏"];
+
+  function reactionKey(post) {
+    return "reaction:" + post.date_iso;
+  }
+
+  function getSavedReaction(post) {
+    try { return localStorage.getItem(reactionKey(post)); } catch (e) { return null; }
+  }
+
+  function saveReaction(post, emoji) {
+    try {
+      const key = reactionKey(post);
+      if (localStorage.getItem(key) === emoji) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      localStorage.setItem(key, emoji);
+      return emoji;
+    } catch (e) { return null; }
+  }
+
   function buildEntry(post) {
     const article = document.createElement("article");
     article.className = "entry";
@@ -71,6 +93,15 @@
       ? `<h2 class="entry-title">${escapeHtml(post.title)}</h2>`
       : "";
 
+    const saved = getSavedReaction(post);
+    const reactionsHtml = `
+      <div class="entry-reactions" role="group" aria-label="تفاعل">
+        ${REACTIONS.map((emoji) => `
+          <button type="button" class="reaction-btn${emoji === saved ? " is-selected" : ""}" data-emoji="${emoji}">${emoji}</button>
+        `).join("")}
+      </div>
+    `;
+
     article.innerHTML = `
       <p class="entry-date">${formatDate(post.date_iso)}</p>
       <div class="page">
@@ -78,8 +109,10 @@
         ${titleHtml}
         <div class="entry-body">${linkify(post.body)}</div>
         ${mediaHtml}
+        ${reactionsHtml}
       </div>
     `;
+    article._post = post;
     return article;
   }
 
@@ -132,9 +165,20 @@
 
   timelineEl.addEventListener("click", (e) => {
     const media = e.target.closest(".entry-media");
-    if (!media) return;
-    lightboxImg.src = media.dataset.full;
-    lightbox.hidden = false;
+    if (media) {
+      lightboxImg.src = media.dataset.full;
+      lightbox.hidden = false;
+      return;
+    }
+    const reactionBtn = e.target.closest(".reaction-btn");
+    if (reactionBtn) {
+      const article = reactionBtn.closest(".entry");
+      const post = article && article._post;
+      if (!post) return;
+      const result = saveReaction(post, reactionBtn.dataset.emoji);
+      article.querySelectorAll(".reaction-btn").forEach((b) => b.classList.remove("is-selected"));
+      if (result) reactionBtn.classList.add("is-selected");
+    }
   });
   lightboxClose.addEventListener("click", () => { lightbox.hidden = true; lightboxImg.src = ""; });
   lightbox.addEventListener("click", (e) => {
@@ -145,6 +189,37 @@
   });
 
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // عداد الزوار — خدمة مجانية بدون تسجيل
+  const visitorCountEl = document.getElementById("visitor-count");
+  fetch("https://countapi.mileshilliard.com/api/v1/hit/said-abuzeinah-archive-visits")
+    .then((r) => r.json())
+    .then((data) => { if (visitorCountEl) visitorCountEl.textContent = Number(data.value).toLocaleString("ar-EG"); })
+    .catch(() => { if (visitorCountEl) visitorCountEl.textContent = "—"; });
+
+  // نموذج الاشتراك بالنشرة البريدية (Netlify Forms)
+  const newsletterForm = document.getElementById("newsletter-form");
+  const newsletterMsg = document.getElementById("newsletter-msg");
+  if (newsletterForm) {
+    newsletterForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const body = new URLSearchParams(new FormData(newsletterForm)).toString();
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      })
+        .then(() => {
+          newsletterMsg.textContent = "تم الاشتراك بنجاح، شكرًا لك!";
+          newsletterMsg.hidden = false;
+          newsletterForm.reset();
+        })
+        .catch(() => {
+          newsletterMsg.textContent = "حدث خطأ، حاول مرة أخرى لاحقًا.";
+          newsletterMsg.hidden = false;
+        });
+    });
+  }
 
   fetch("data/posts.json", { cache: "no-store" })
     .then((r) => r.json())
