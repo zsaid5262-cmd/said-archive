@@ -17,7 +17,12 @@
 
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
+
+/* Guarantee the native [hidden] attribute always wins over any
+   component's own display rule (this was the bug: .lightbox{display:flex}
+   was overriding [hidden] and the overlay could never be closed). */
 [hidden]{display:none !important;}
+
 body{
   margin:0;
   background:
@@ -259,6 +264,114 @@ body{
   padding:3rem 1rem;
 }
 
+/* ---------- Translate widget ---------- */
+.translate-widget{
+  position:absolute;
+  top:1.2rem; left:1.2rem;
+  z-index:5;
+}
+.translate-widget .goog-te-gadget{
+  font-family:'Noto Kufi Arabic', sans-serif !important;
+  font-size:0 !important;
+}
+.translate-widget select{
+  font-family:'Noto Kufi Arabic', sans-serif;
+  background:rgba(239,232,214,0.08);
+  color:var(--ivory);
+  border:1px solid rgba(239,232,214,0.18);
+  border-radius:999px;
+  padding:0.3rem 0.6rem;
+  font-size:0.78rem;
+}
+body > .skiptranslate.goog-te-banner-frame{ display:none !important; }
+body{ top:0 !important; }
+
+/* ---------- Visitor counter ---------- */
+.visitor-count{
+  margin-top:0.5rem;
+  font-family:'Noto Kufi Arabic', sans-serif;
+  font-size:0.75rem;
+  color:var(--ivory-dim);
+}
+.visitor-count span{color:var(--brass); font-weight:600;}
+
+/* ---------- Reactions ---------- */
+.entry-reactions{
+  display:flex;
+  gap:0.5rem;
+  margin-top:1.1rem;
+}
+.reaction-btn{
+  background:rgba(0,0,0,0.04);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:999px;
+  font-size:1.05rem;
+  line-height:1;
+  padding:0.35rem 0.6rem;
+  cursor:pointer;
+  transition:transform 0.15s ease, background 0.15s ease;
+}
+.reaction-btn:hover{ transform:translateY(-2px); }
+.reaction-btn.is-selected{
+  background:rgba(199,154,75,0.22);
+  border-color:var(--brass);
+}
+
+/* ---------- Newsletter ---------- */
+.newsletter{
+  max-width:36rem;
+  margin:0 auto;
+  padding:0 1.5rem 2rem;
+  text-align:center;
+}
+.newsletter-title{
+  font-family:'Aref Ruqaa', serif;
+  font-size:1.4rem;
+  color:var(--ivory);
+  margin:0 0 0.4rem;
+}
+.newsletter-sub{
+  color:var(--ivory-dim);
+  font-size:0.88rem;
+  margin:0 0 1.1rem;
+}
+.newsletter-row{
+  display:flex;
+  gap:0.6rem;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+#newsletter-email{
+  font-family:'Noto Naskh Arabic', serif;
+  background:rgba(239,232,214,0.06);
+  border:1px solid rgba(239,232,214,0.2);
+  color:var(--ivory);
+  border-radius:999px;
+  padding:0.55rem 1.2rem;
+  font-size:0.92rem;
+  width:16rem;
+  max-width:60vw;
+}
+#newsletter-email::placeholder{ color:var(--ivory-dim); }
+.newsletter-row button{
+  font-family:'Noto Kufi Arabic', sans-serif;
+  background:var(--brass);
+  color:var(--ink);
+  border:none;
+  border-radius:999px;
+  padding:0.55rem 1.4rem;
+  font-weight:600;
+  cursor:pointer;
+}
+.newsletter-row button:hover{ background:var(--brass-soft); }
+.newsletter-msg{
+  margin-top:0.8rem;
+  font-size:0.85rem;
+  color:var(--brass);
+  font-family:'Noto Kufi Arabic', sans-serif;
+}
+.hp-field{ position:absolute; left:-9999px; }
+
 /* ---------- Footer ---------- */
 .site-foot{
   text-align:center;
@@ -268,6 +381,13 @@ body{
   font-size:0.78rem;
   border-top:1px solid var(--line);
 }
+.admin-link{
+  color:var(--ivory-dim);
+  opacity:0.55;
+  text-decoration:none;
+  font-size:0.72rem;
+}
+.admin-link:hover{color:var(--brass); opacity:1;}
 
 /* ---------- Lightbox ---------- */
 .lightbox{
