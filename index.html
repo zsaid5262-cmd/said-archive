@@ -14,7 +14,8 @@
 
 <header class="site-head">
   <div class="ink-drop" aria-hidden="true"></div>
-  <div id="google_translate_element" class="translate-widget"></div>
+  <button id="translate-toggle" class="translate-toggle" type="button">🌐 Translate</button>
+  <div id="google_translate_element" class="translate-widget" hidden></div>
   <div class="head-inner">
     <p class="eyebrow">أرشيف شخصي</p>
     <h1 class="site-title">سعيد أبو زينة</h1>
@@ -71,15 +72,6 @@
   <img id="lightbox-img" src="" alt="">
 </div>
 
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      { pageLanguage: 'ar', autoDisplay: false },
-      'google_translate_element'
-    );
-  }
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script src="app.js"></script>
 </body>
 </html>
