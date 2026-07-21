@@ -58,7 +58,7 @@ body{
   margin:0 0 0.9rem;
 }
 .site-title{
-  font-family:'Noto Kufi Arabic', sans-serif;
+  font-family:'Aref Ruqaa', serif;
   font-weight:700;
   font-size:clamp(2.6rem, 6vw, 4.2rem);
   margin:0;
@@ -210,7 +210,7 @@ body{
 .entry-badge.khatera{background:rgba(199,154,75,0.18); color:var(--brass-soft);}
 
 .entry-title{
-  font-family:'Noto Naskh Arabic', serif;
+  font-family:'Aref Ruqaa', serif;
   font-weight:700;
   font-size:1.55rem;
   margin:0 0 0.85rem;
@@ -337,7 +337,7 @@ body{ top:0 !important; }
   text-align:center;
 }
 .newsletter-title{
-  font-family:'Noto Naskh Arabic', serif;
+  font-family:'Aref Ruqaa', serif;
   font-size:1.4rem;
   color:var(--ivory);
   margin:0 0 0.4rem;
