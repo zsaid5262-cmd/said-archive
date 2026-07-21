@@ -29,6 +29,19 @@
   </svg>
 </header>
 
+<section class="newsletter newsletter--top" aria-label="النشرة البريدية">
+  <form id="newsletter-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="newsletter">
+    <p class="hp-field"><label>لا تملأ هذا الحقل: <input name="bot-field"></label></p>
+    <div class="newsletter-row">
+      <span class="newsletter-label">اشترك ليصلك كل جديد:</span>
+      <input type="email" name="email" id="newsletter-email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني">
+      <button type="submit">اشتراك</button>
+    </div>
+    <p id="newsletter-msg" class="newsletter-msg" hidden></p>
+  </form>
+</section>
+
 <nav class="filters" aria-label="تصفية المنشورات">
   <button class="filter-btn is-active" data-filter="all">الكل</button>
   <button class="filter-btn" data-filter="story">قصص</button>
@@ -45,22 +58,6 @@
   <div id="sentinel" class="sentinel" aria-hidden="true"></div>
   <button id="load-more" class="load-more" hidden>تحميل المزيد</button>
 </main>
-
-<section class="newsletter" aria-label="النشرة البريدية">
-  <div class="newsletter-inner">
-    <h2 class="newsletter-title">اشترك ليصلك كل جديد</h2>
-    <p class="newsletter-sub">بريد بسيط عند إضافة خاطرة أو قصة جديدة، بلا إزعاج.</p>
-    <form id="newsletter-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-      <input type="hidden" name="form-name" value="newsletter">
-      <p class="hp-field"><label>لا تملأ هذا الحقل: <input name="bot-field"></label></p>
-      <div class="newsletter-row">
-        <input type="email" name="email" id="newsletter-email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني">
-        <button type="submit">اشتراك</button>
-      </div>
-      <p id="newsletter-msg" class="newsletter-msg" hidden></p>
-    </form>
-  </div>
-</section>
 
 <footer class="site-foot">
   <p>هذا الأرشيف نسخة خاصة محفوظة لحماية حقوق النشر — © <span id="year"></span> سعيد أبو زينة</p>
