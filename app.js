@@ -137,6 +137,15 @@
     });
   }
 
+  const reactionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        loadReactionCounts(entry.target);
+        reactionObserver.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: "200px" });
+
   function renderNextPage() {
     const slice = filtered.slice(renderedCount, renderedCount + PAGE_SIZE);
     const frag = document.createDocumentFragment();
@@ -147,7 +156,7 @@
       newArticles.push(article);
     });
     timelineEl.appendChild(frag);
-    newArticles.forEach(loadReactionCounts);
+    newArticles.forEach((a) => reactionObserver.observe(a));
     renderedCount += slice.length;
     loadMoreBtn.hidden = renderedCount >= filtered.length;
   }
@@ -227,6 +236,27 @@
   });
 
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // تحميل أداة الترجمة فقط عند الطلب، لتفادي تعارضها مع تحديث الصفحة الديناميكي (البحث والتصفية)
+  const translateToggle = document.getElementById("translate-toggle");
+  const translateWidget = document.getElementById("google_translate_element");
+  let translateLoaded = false;
+  if (translateToggle) {
+    translateToggle.addEventListener("click", () => {
+      translateWidget.hidden = false;
+      if (translateLoaded) return;
+      translateLoaded = true;
+      window.googleTranslateElementInit = function () {
+        new google.translate.TranslateElement(
+          { pageLanguage: "ar", autoDisplay: false },
+          "google_translate_element"
+        );
+      };
+      const s = document.createElement("script");
+      s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      document.body.appendChild(s);
+    });
+  }
 
   // عداد الزوار — خدمة مجانية بدون تسجيل
   const visitorCountEl = document.getElementById("visitor-count");
