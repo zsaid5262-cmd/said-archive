@@ -55,25 +55,26 @@
   }
 
   const REACTIONS = ["❤️", "😢", "😊", "👏"];
+  const REACTION_LABELS = { "❤️": "قلب", "😢": "حزن", "😊": "ابتسامة", "👏": "تصفيق" };
 
-  function reactionKey(post) {
-    return "reaction:" + post.date_iso;
+  function slugify(post) {
+    return post.date_iso.replace(/[^0-9]/g, "");
   }
 
-  function getSavedReaction(post) {
-    try { return localStorage.getItem(reactionKey(post)); } catch (e) { return null; }
+  function reactionCounterKey(post, emoji) {
+    return `said-abuzeinah-reaction-${slugify(post)}-${REACTION_LABELS[emoji]}`;
   }
 
-  function saveReaction(post, emoji) {
-    try {
-      const key = reactionKey(post);
-      if (localStorage.getItem(key) === emoji) {
-        localStorage.removeItem(key);
-        return null;
-      }
-      localStorage.setItem(key, emoji);
-      return emoji;
-    } catch (e) { return null; }
+  function votedKey(post) {
+    return "voted:" + post.date_iso;
+  }
+
+  function getVotedEmoji(post) {
+    try { return localStorage.getItem(votedKey(post)); } catch (e) { return null; }
+  }
+
+  function markVoted(post, emoji) {
+    try { localStorage.setItem(votedKey(post), emoji); } catch (e) { /* ignore */ }
   }
 
   function buildEntry(post) {
@@ -93,11 +94,14 @@
       ? `<h2 class="entry-title">${escapeHtml(post.title)}</h2>`
       : "";
 
-    const saved = getSavedReaction(post);
+    const votedEmoji = getVotedEmoji(post);
     const reactionsHtml = `
       <div class="entry-reactions" role="group" aria-label="تفاعل">
         ${REACTIONS.map((emoji) => `
-          <button type="button" class="reaction-btn${emoji === saved ? " is-selected" : ""}" data-emoji="${emoji}">${emoji}</button>
+          <button type="button" class="reaction-btn${emoji === votedEmoji ? " is-selected" : ""}" data-emoji="${emoji}" ${votedEmoji ? "disabled" : ""}>
+            <span class="reaction-emoji">${emoji}</span>
+            <span class="reaction-total" data-emoji-total="${emoji}">—</span>
+          </button>
         `).join("")}
       </div>
     `;
@@ -116,11 +120,34 @@
     return article;
   }
 
+  function loadReactionCounts(article) {
+    const post = article._post;
+    REACTIONS.forEach((emoji) => {
+      const key = reactionCounterKey(post, emoji);
+      fetch(`https://countapi.mileshilliard.com/api/v1/get/${key}`)
+        .then((r) => (r.ok ? r.json() : { value: 0 }))
+        .then((data) => {
+          const el = article.querySelector(`[data-emoji-total="${emoji}"]`);
+          if (el) el.textContent = Number(data.value || 0).toLocaleString("ar-EG");
+        })
+        .catch(() => {
+          const el = article.querySelector(`[data-emoji-total="${emoji}"]`);
+          if (el) el.textContent = "0";
+        });
+    });
+  }
+
   function renderNextPage() {
     const slice = filtered.slice(renderedCount, renderedCount + PAGE_SIZE);
     const frag = document.createDocumentFragment();
-    slice.forEach((post) => frag.appendChild(buildEntry(post)));
+    const newArticles = [];
+    slice.forEach((post) => {
+      const article = buildEntry(post);
+      frag.appendChild(article);
+      newArticles.push(article);
+    });
     timelineEl.appendChild(frag);
+    newArticles.forEach(loadReactionCounts);
     renderedCount += slice.length;
     loadMoreBtn.hidden = renderedCount >= filtered.length;
   }
@@ -171,13 +198,24 @@
       return;
     }
     const reactionBtn = e.target.closest(".reaction-btn");
-    if (reactionBtn) {
+    if (reactionBtn && !reactionBtn.disabled) {
       const article = reactionBtn.closest(".entry");
       const post = article && article._post;
-      if (!post) return;
-      const result = saveReaction(post, reactionBtn.dataset.emoji);
-      article.querySelectorAll(".reaction-btn").forEach((b) => b.classList.remove("is-selected"));
-      if (result) reactionBtn.classList.add("is-selected");
+      if (!post || getVotedEmoji(post)) return;
+      const emoji = reactionBtn.dataset.emoji;
+      const key = reactionCounterKey(post, emoji);
+      article.querySelectorAll(".reaction-btn").forEach((b) => (b.disabled = true));
+      fetch(`https://countapi.mileshilliard.com/api/v1/hit/${key}`)
+        .then((r) => r.json())
+        .then((data) => {
+          const el = article.querySelector(`[data-emoji-total="${emoji}"]`);
+          if (el) el.textContent = Number(data.value || 0).toLocaleString("ar-EG");
+          reactionBtn.classList.add("is-selected");
+          markVoted(post, emoji);
+        })
+        .catch(() => {
+          article.querySelectorAll(".reaction-btn").forEach((b) => (b.disabled = false));
+        });
     }
   });
   lightboxClose.addEventListener("click", () => { lightbox.hidden = true; lightboxImg.src = ""; });
