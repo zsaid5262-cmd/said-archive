@@ -58,7 +58,7 @@ body{
   margin:0 0 0.9rem;
 }
 .site-title{
-  font-family:‎'Noto Kufi Arabic'‎, serif;
+  font-family:'Noto Kufi Arabic', sans-serif;
   font-weight:700;
   font-size:clamp(2.6rem, 6vw, 4.2rem);
   margin:0;
