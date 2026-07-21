@@ -41,15 +41,37 @@
     });
   }
 
+  function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  // نطاق حروف العربية المستخدم لتحديد حدود الكلمة (بديل \b الذي لا يدعم العربية)
+  const ARABIC_LETTERS = "\\u0621-\\u064A\\u0660-\\u0669\\u066E-\\u06D3\\u06D5\\uFB50-\\uFDFF\\uFE70-\\uFEFF";
+
+  function buildSearchRegex(query) {
+    const trimmed = query.trim();
+    if (!trimmed) return null;
+    // إزالة التشكيل من كلمة البحث، ومعاملة كل صور الألف (ا أ إ آ) كحرف واحد
+    const cleaned = trimmed.replace(/[\u064B-\u0652]/g, "");
+    const escaped = escapeRegex(cleaned).replace(/[اأإآ]/g, "[اأإآ]");
+    try {
+      return new RegExp(`(?<![${ARABIC_LETTERS}])${escaped}(?![${ARABIC_LETTERS}])`, "gi");
+    } catch (e) {
+      // بعض المتصفحات القديمة لا تدعم lookbehind — نعود لمطابقة بسيطة عندها
+      return new RegExp(escaped, "gi");
+    }
+  }
+
   function postType(post) {
     return post.title ? "story" : "khatera";
   }
 
-  function matchesFilter(post) {
+  function matchesFilter(post, searchRegex) {
     if (currentFilter !== "all" && postType(post) !== currentFilter) return false;
-    if (currentQuery) {
-      const hay = ((post.title || "") + " " + post.body).toLowerCase();
-      if (!hay.includes(currentQuery)) return false;
+    if (searchRegex) {
+      searchRegex.lastIndex = 0;
+      const hay = (post.title || "") + " " + post.body;
+      if (!searchRegex.test(hay)) return false;
     }
     return true;
   }
@@ -77,7 +99,13 @@
     try { localStorage.setItem(votedKey(post), emoji); } catch (e) { /* ignore */ }
   }
 
-  function buildEntry(post) {
+  function highlight(escapedHtml, searchRegex) {
+    if (!searchRegex) return escapedHtml;
+    searchRegex.lastIndex = 0;
+    return escapedHtml.replace(searchRegex, (m) => `<mark class="hl">${m}</mark>`);
+  }
+
+  function buildEntry(post, searchRegex) {
     const article = document.createElement("article");
     article.className = "entry";
 
@@ -91,7 +119,7 @@
       : "";
 
     const titleHtml = post.title
-      ? `<h2 class="entry-title">${escapeHtml(post.title)}</h2>`
+      ? `<h2 class="entry-title">${highlight(escapeHtml(post.title), searchRegex)}</h2>`
       : "";
 
     const votedEmoji = getVotedEmoji(post);
@@ -111,7 +139,7 @@
       <div class="page">
         <span class="entry-badge ${type}">${badgeLabel}</span>
         ${titleHtml}
-        <div class="entry-body">${linkify(post.body)}</div>
+        <div class="entry-body">${highlight(linkify(post.body), searchRegex)}</div>
         ${mediaHtml}
         ${reactionsHtml}
       </div>
@@ -148,10 +176,11 @@
 
   function renderNextPage() {
     const slice = filtered.slice(renderedCount, renderedCount + PAGE_SIZE);
+    const searchRegex = buildSearchRegex(currentQuery);
     const frag = document.createDocumentFragment();
     const newArticles = [];
     slice.forEach((post) => {
-      const article = buildEntry(post);
+      const article = buildEntry(post, searchRegex);
       frag.appendChild(article);
       newArticles.push(article);
     });
@@ -164,10 +193,20 @@
   function resetAndRender() {
     timelineEl.innerHTML = "";
     renderedCount = 0;
-    filtered = ALL_POSTS.filter(matchesFilter);
+    const searchRegex = buildSearchRegex(currentQuery);
+    filtered = ALL_POSTS.filter((post) => matchesFilter(post, searchRegex));
     emptyMsg.hidden = filtered.length > 0;
-    if (filtered.length > 0) renderNextPage();
-    else loadMoreBtn.hidden = true;
+    if (filtered.length > 0) {
+      renderNextPage();
+      if (currentQuery) {
+        setTimeout(() => {
+          const firstMark = timelineEl.querySelector("mark.hl");
+          if (firstMark) firstMark.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 50);
+      }
+    } else {
+      loadMoreBtn.hidden = true;
+    }
   }
 
   filterBtns.forEach((btn) => {
@@ -183,7 +222,7 @@
   searchInput.addEventListener("input", (e) => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => {
-      currentQuery = e.target.value.trim().toLowerCase();
+      currentQuery = e.target.value.trim();
       resetAndRender();
     }, 200);
   });
