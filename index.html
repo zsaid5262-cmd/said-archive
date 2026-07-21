@@ -14,11 +14,13 @@
 
 <header class="site-head">
   <div class="ink-drop" aria-hidden="true"></div>
+  <div id="google_translate_element" class="translate-widget"></div>
   <div class="head-inner">
     <p class="eyebrow">أرشيف شخصي</p>
     <h1 class="site-title">سعيد أبو زينة</h1>
     <p class="site-sub">خواطرُ وقصصٌ قصيرة، مِن دفترٍ رقمي محفوظ بمرور الزمن</p>
     <p class="site-count"><span id="post-count">—</span> نصًا مؤرشفًا حتى الآن</p>
+    <p class="visitor-count">زار الأرشيف حتى الآن <span id="visitor-count">—</span> زائر</p>
   </div>
   <svg class="nib" viewBox="0 0 200 60" aria-hidden="true">
     <path d="M10 30 Q100 5 190 30 Q100 55 10 30 Z" fill="none" stroke="currentColor" stroke-width="1.4"/>
@@ -43,8 +45,25 @@
   <button id="load-more" class="load-more" hidden>تحميل المزيد</button>
 </main>
 
+<section class="newsletter" aria-label="النشرة البريدية">
+  <div class="newsletter-inner">
+    <h2 class="newsletter-title">اشترك ليصلك كل جديد</h2>
+    <p class="newsletter-sub">بريد بسيط عند إضافة خاطرة أو قصة جديدة، بلا إزعاج.</p>
+    <form id="newsletter-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="newsletter">
+      <p class="hp-field"><label>لا تملأ هذا الحقل: <input name="bot-field"></label></p>
+      <div class="newsletter-row">
+        <input type="email" name="email" id="newsletter-email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني">
+        <button type="submit">اشتراك</button>
+      </div>
+      <p id="newsletter-msg" class="newsletter-msg" hidden></p>
+    </form>
+  </div>
+</section>
+
 <footer class="site-foot">
   <p>هذا الأرشيف نسخة خاصة محفوظة لحماية حقوق النشر — © <span id="year"></span> سعيد أبو زينة</p>
+  <p><a href="admin/" class="admin-link">لوحة التحكم</a></p>
 </footer>
 
 <div id="lightbox" class="lightbox" hidden>
@@ -52,6 +71,15 @@
   <img id="lightbox-img" src="" alt="">
 </div>
 
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { pageLanguage: 'ar', autoDisplay: false },
+      'google_translate_element'
+    );
+  }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script src="app.js"></script>
 </body>
 </html>
