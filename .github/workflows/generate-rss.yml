@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "data/posts/**"
-    workflow_dispatch: {}
+  workflow_dispatch: {}
 permissions:
   contents: write
 
