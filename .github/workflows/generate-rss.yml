@@ -1,24 +1,27 @@
-name: Generate RSS feed
+name: Rebuild archive data
 
 on:
   push:
     branches: [main]
     paths:
-      - "data/posts.json"
+      - "data/posts/**"
 
 jobs:
-  build-rss:
+  rebuild:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - name: Aggregate posts into data/posts.json
+        run: node aggregate-posts.js
+
       - name: Generate rss.xml
         run: node build-rss.js
 
-      - name: Commit rss.xml if changed
+      - name: Commit changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add rss.xml
-          git diff --staged --quiet || git commit -m "تحديث rss.xml تلقائيًا"
+          git add data/posts.json rss.xml
+          git diff --staged --quiet || git commit -m "تحديث تلقائي: تجميع المنشورات وتحديث rss.xml"
           git push
