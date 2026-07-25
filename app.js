@@ -276,6 +276,44 @@
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
+  // زر البحث في الشريط العلوي: يُظهر/يُخفي مربع البحث
+  const searchToggle = document.getElementById("search-toggle");
+  const searchBox = document.getElementById("search-box");
+  if (searchToggle && searchBox) {
+    searchToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const willShow = searchBox.hidden;
+      searchBox.hidden = !willShow;
+      searchToggle.setAttribute("aria-expanded", String(willShow));
+      if (willShow) searchInput.focus();
+    });
+  }
+
+  // قائمة "المزيد" المنسدلة: الترجمة، النشرة البريدية، لوحة التحكم
+  const moreToggle = document.getElementById("more-toggle");
+  const morePanel = document.getElementById("more-panel");
+  if (moreToggle && morePanel) {
+    moreToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const willShow = morePanel.hidden;
+      morePanel.hidden = !willShow;
+      moreToggle.setAttribute("aria-expanded", String(willShow));
+    });
+    morePanel.addEventListener("click", (e) => e.stopPropagation());
+  }
+
+  // إغلاق القوائم المنسدلة عند الضغط خارجها
+  document.addEventListener("click", () => {
+    if (morePanel && !morePanel.hidden) {
+      morePanel.hidden = true;
+      moreToggle.setAttribute("aria-expanded", "false");
+    }
+    if (searchBox && !searchBox.hidden && !searchInput.value) {
+      searchBox.hidden = true;
+      searchToggle.setAttribute("aria-expanded", "false");
+    }
+  });
+
   // تحميل أداة الترجمة فقط عند الطلب، لتفادي تعارضها مع تحديث الصفحة الديناميكي (البحث والتصفية)
   const translateToggle = document.getElementById("translate-toggle");
   const translateWidget = document.getElementById("google_translate_element");
