@@ -283,31 +283,44 @@
     searchToggle.addEventListener("click", (e) => {
       e.stopPropagation();
       const willShow = searchBox.hidden;
+      closeAllDropdowns();
       searchBox.hidden = !willShow;
       searchToggle.setAttribute("aria-expanded", String(willShow));
       if (willShow) searchInput.focus();
     });
   }
 
-  // قائمة "المزيد" المنسدلة: الترجمة، النشرة البريدية، لوحة التحكم
-  const moreToggle = document.getElementById("more-toggle");
-  const morePanel = document.getElementById("more-panel");
-  if (moreToggle && morePanel) {
-    moreToggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const willShow = morePanel.hidden;
-      morePanel.hidden = !willShow;
-      moreToggle.setAttribute("aria-expanded", String(willShow));
+  // قائمتا "ترجمة" و"اشترك" المنسدلتان في الشريط العلوي
+  const dropdowns = [
+    { toggle: document.getElementById("translate-toggle"), panel: document.getElementById("translate-panel") },
+    { toggle: document.getElementById("newsletter-toggle"), panel: document.getElementById("newsletter-panel") },
+  ];
+
+  function closeAllDropdowns() {
+    dropdowns.forEach(({ toggle, panel }) => {
+      if (panel && !panel.hidden) {
+        panel.hidden = true;
+        toggle.setAttribute("aria-expanded", "false");
+      }
     });
-    morePanel.addEventListener("click", (e) => e.stopPropagation());
   }
+
+  dropdowns.forEach(({ toggle, panel }) => {
+    if (!toggle || !panel) return;
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const willShow = panel.hidden;
+      closeAllDropdowns();
+      if (searchBox && !searchBox.value) searchBox.hidden = true;
+      panel.hidden = !willShow;
+      toggle.setAttribute("aria-expanded", String(willShow));
+    });
+    panel.addEventListener("click", (e) => e.stopPropagation());
+  });
 
   // إغلاق القوائم المنسدلة عند الضغط خارجها
   document.addEventListener("click", () => {
-    if (morePanel && !morePanel.hidden) {
-      morePanel.hidden = true;
-      moreToggle.setAttribute("aria-expanded", "false");
-    }
+    closeAllDropdowns();
     if (searchBox && !searchBox.hidden && !searchInput.value) {
       searchBox.hidden = true;
       searchToggle.setAttribute("aria-expanded", "false");
