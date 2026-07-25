@@ -23,7 +23,8 @@ collections:
             name: "posts"
             widget: "list"
             label_singular: "منشور"
-            summary: "{{title}} — {{fields.date_iso}}"
+            summary: "{{title | default('خاطرة')}} — {{date_iso}}"
+            fields:
               - { label: "التاريخ والوقت", name: "date_iso", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ss", picker_utc: false }
               - { label: "العنوان (اتركه فارغًا إن كانت خاطرة بلا عنوان)", name: "title", widget: "string", required: false }
               - { label: "النص", name: "body", widget: "text" }
