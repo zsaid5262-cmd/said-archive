@@ -22,28 +22,26 @@
 
     <button id="search-toggle" class="topnav-icon-btn" type="button" aria-label="بحث" aria-expanded="false">🔍 بحث</button>
 
-    <div class="topnav-more">
-      <button id="more-toggle" class="topnav-icon-btn" type="button" aria-haspopup="true" aria-expanded="false">المزيد ▾</button>
-      <div id="more-panel" class="more-panel" hidden>
-        <button id="translate-toggle" class="more-item" type="button">🌐 ترجمة الصفحة</button>
-        <div id="google_translate_element" class="translate-widget" hidden></div>
+    <div class="topnav-dropdown">
+      <button id="translate-toggle" class="topnav-icon-btn" type="button" aria-haspopup="true" aria-expanded="false">🌐 ترجمة</button>
+      <div id="translate-panel" class="dropdown-panel" hidden>
+        <div id="google_translate_element" class="translate-widget"></div>
+      </div>
+    </div>
 
-        <div class="more-divider"></div>
-
+    <div class="topnav-dropdown">
+      <button id="newsletter-toggle" class="topnav-icon-btn" type="button" aria-haspopup="true" aria-expanded="false">✉️ اشترك</button>
+      <div id="newsletter-panel" class="dropdown-panel" hidden>
         <form id="newsletter-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="newsletter">
           <p class="hp-field"><label>لا تملأ هذا الحقل: <input name="bot-field"></label></p>
           <p class="more-label">اشترك ليصلك كل جديد</p>
           <div class="newsletter-row">
-            <input type="email" name="email" id="newsletter-email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني">
+            <input type="email" name="email" id="newsletter-email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني" dir="ltr">
             <button type="submit">اشتراك</button>
           </div>
           <p id="newsletter-msg" class="newsletter-msg" hidden></p>
         </form>
-
-        <div class="more-divider"></div>
-
-        <a href="admin/" class="more-item">لوحة التحكم</a>
       </div>
     </div>
   </div>
