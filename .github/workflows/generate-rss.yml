@@ -6,6 +6,9 @@ on:
     paths:
       - "data/posts/**"
 
+permissions:
+  contents: write
+
 jobs:
   rebuild:
     runs-on: ubuntu-latest
